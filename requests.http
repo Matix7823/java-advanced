@@ -1,0 +1,43 @@
+### ─── Authentification ────────────────────────────────────────────────────────
+
+# 1. Créer un nouvel utilisateur
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "password123"
+}
+
+###
+
+# 2. Se connecter pour récupérer le token JWT
+# Copiez la longue suite de caractères dans ("token": "...") de la réponse
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "jane@example.com",
+  "password": "password123"
+}
+
+
+### ─── Produits (Products) ───────────────────────────────────────────────────
+
+# 3. Voir tous les produits (Route publique, pas besoin de token)
+GET http://localhost:8080/api/products
+
+###
+
+# 4. Créer un produit
+# REMPLACEZ <VOTRE_TOKEN> par le token obtenu à l'étape 2
+POST http://localhost:8080/api/products
+Content-Type: application/json
+Authorization: Bearer <VOTRE_TOKEN>
+
+{
+  "name": "Super Jeu Vidéo",
+  "description": "Un jeu génial",
+  "price": 59.99
+}
