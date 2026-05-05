@@ -63,6 +63,18 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.FORBIDDEN, "You don't have permission to perform this action", null);
     }
 
+    // ── Client errors (4xx) ──────────────────────────────────────────────────
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported(org.springframework.web.HttpRequestMethodNotSupportedException ex) {
+        return build(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed: " + ex.getMethod() + ". Use " + ex.getSupportedHttpMethods(), null);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleNotReadable(org.springframework.http.converter.HttpMessageNotReadableException ex) {
+        return build(HttpStatus.BAD_REQUEST, "Required request body is missing or malformed", null);
+    }
+
     // ── Fallback (catch-all — prevents 5xx leaking stack traces) ─────────────
 
     @ExceptionHandler(Exception.class)
