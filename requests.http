@@ -34,7 +34,7 @@ GET http://localhost:8080/api/products
 # REMPLACEZ <VOTRE_TOKEN> par le token obtenu à l'étape 2
 POST http://localhost:8080/api/products
 Content-Type: application/json
-Authorization: Bearer <VOTRE_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYXRoaXNAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODA1NjA2MjQsImV4cCI6MTc4MDY0NzAyNH0.mrWLePpC-tSzN4nNHVwlEw016F8wDphmjz9PPoBJKu7bkT7RpT4ttWhAdaSDLjcX_V6iVZEJOpCsLcwiKk3Fwg
 
 {
   "name": "Super Jeu Vidéo",
