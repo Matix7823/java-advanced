@@ -5,8 +5,8 @@ POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Jane Doe",
-  "email": "jane@example.com",
+  "name": "mathis Doe",
+  "email": "mathis@example.com",
   "password": "password123"
 }
 
@@ -18,7 +18,7 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "jane@example.com",
+  "email": "mathis@example.com",
   "password": "password123"
 }
 
@@ -47,10 +47,3 @@ Authorization: Bearer <VOTRE_TOKEN>
 # (Doit retourner une erreur 401 Unauthorized ou 403 Forbidden)
 DELETE http://localhost:8080/api/products/<ID_DU_PRODUIT_CREE_A_L_ETAPE_4>
 Content-Type: application/json
-
-###
-
-# 6. (Bonus Admin) Voir tous les utilisateurs
-# Attention : nécessite un token d'un utilisateur avec le rôle ADMIN
-GET http://localhost:8080/api/users
-Authorization: Bearer <VOTRE_TOKEN_ADMIN>
