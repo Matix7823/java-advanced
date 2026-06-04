@@ -41,3 +41,16 @@ Authorization: Bearer <VOTRE_TOKEN>
   "description": "Un jeu génial",
   "price": 59.99
 }
+###
+
+# 5. TEST DE SÉCURITÉ : Tenter de supprimer un produit SANS token
+# (Doit retourner une erreur 401 Unauthorized ou 403 Forbidden)
+DELETE http://localhost:8080/api/products/<ID_DU_PRODUIT_CREE_A_L_ETAPE_4>
+Content-Type: application/json
+
+###
+
+# 6. (Bonus Admin) Voir tous les utilisateurs
+# Attention : nécessite un token d'un utilisateur avec le rôle ADMIN
+GET http://localhost:8080/api/users
+Authorization: Bearer <VOTRE_TOKEN_ADMIN>
