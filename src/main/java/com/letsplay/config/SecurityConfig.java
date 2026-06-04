@@ -43,13 +43,13 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints
+                // Points de terminaison publics (accessibles à tous)
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/{id}").permitAll()
-                // User management — admins only
+                // Gestion des utilisateurs — réservé aux administrateurs (ADMIN)
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
-                // Everything else requires authentication
+                // Toute autre requête nécessite d'être authentifié
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())

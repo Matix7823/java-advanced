@@ -31,7 +31,7 @@ public class User {
     @Indexed(unique = true)
     private String email;
 
-    /** BCrypt hash — never exposed in API responses */
+    /** Hachage BCrypt — n'est jamais exposé dans les réponses de l'API */
     private String password;
 
     @Builder.Default

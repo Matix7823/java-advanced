@@ -14,13 +14,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")          // class-level guard — all endpoints require ADMIN
+@PreAuthorize("hasRole('ADMIN')")          // Protection au niveau de la classe — tous les endpoints requièrent le rôle ADMIN
 public class UserController {
 
     private final UserService userService;
 
     /**
-     * GET /api/users — list all users (ADMIN only)
+     * GET /api/users
+     * Retourne la liste de tous les utilisateurs (Accès réservé aux ADMIN)
      */
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAll() {
@@ -28,7 +29,8 @@ public class UserController {
     }
 
     /**
-     * GET /api/users/{id} — get user by ID (ADMIN only)
+     * GET /api/users/{id}
+     * Récupère un utilisateur spécifique par son ID (Accès réservé aux ADMIN)
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getById(@PathVariable String id) {
@@ -36,7 +38,8 @@ public class UserController {
     }
 
     /**
-     * PUT /api/users/{id} — update name/email (ADMIN only)
+     * PUT /api/users/{id}
+     * Met à jour le nom et l'email d'un utilisateur (Accès réservé aux ADMIN)
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(
@@ -46,7 +49,8 @@ public class UserController {
     }
 
     /**
-     * DELETE /api/users/{id} — delete user (ADMIN only)
+     * DELETE /api/users/{id}
+     * Supprime un utilisateur de la base de données (Accès réservé aux ADMIN)
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {

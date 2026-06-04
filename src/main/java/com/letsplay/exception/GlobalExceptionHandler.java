@@ -11,6 +11,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.time.Instant;
 import java.util.Map;
@@ -18,9 +20,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
+@SuppressWarnings("null")
 public class GlobalExceptionHandler {
 
-    // ── Validation errors (400) ───────────────────────────────────────────────
+    // ── Erreurs de validation (400) ───────────────────────────────────────────
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
@@ -33,7 +36,7 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "Validation failed", fieldErrors);
     }
 
-    // ── Business logic errors ─────────────────────────────────────────────────
+    // ── Erreurs liées à la logique métier ─────────────────────────────────────
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
@@ -50,40 +53,40 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.FORBIDDEN, ex.getMessage(), null);
     }
 
-    // ── Spring Security errors ────────────────────────────────────────────────
+    // ── Erreurs Spring Security ───────────────────────────────────────────────
 
     @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleBadCredentials(RuntimeException ex) {
-        // Intentionally vague — do not leak whether email exists
-        return build(HttpStatus.UNAUTHORIZED, "Invalid email or password", null);
+        // Intentionnellement flou — on ne révèle pas si l'email existe ou non
+        return build(HttpStatus.UNAUTHORIZED, "Email ou mot de passe invalide", null);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
-        return build(HttpStatus.FORBIDDEN, "You don't have permission to perform this action", null);
+        return build(HttpStatus.FORBIDDEN, "Vous n'avez pas l'autorisation d'effectuer cette action", null);
     }
 
-    // ── Client errors (4xx) ──────────────────────────────────────────────────
+    // ── Erreurs Client (4xx) ─────────────────────────────────────────────────
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ErrorResponse> handleMethodNotSupported(org.springframework.web.HttpRequestMethodNotSupportedException ex) {
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
         return build(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed: " + ex.getMethod() + ". Use " + ex.getSupportedHttpMethods(), null);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleNotReadable(org.springframework.http.converter.HttpMessageNotReadableException ex) {
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleNotReadable(HttpMessageNotReadableException ex) {
         return build(HttpStatus.BAD_REQUEST, "Required request body is missing or malformed", null);
     }
 
-    // ── Fallback (catch-all — prevents 5xx leaking stack traces) ─────────────
+    // ── Solution de repli (catch-all — évite de fuiter des stack traces en 5xx) ─
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAll(Exception ex) {
         log.error("Unhandled exception: {}", ex.getMessage(), ex);
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", null);
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Une erreur inattendue est survenue", null);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // ── Méthodes utilitaires ──────────────────────────────────────────────────
 
     private ResponseEntity<ErrorResponse> build(HttpStatus status, String message,
                                                  Map<String, String> details) {

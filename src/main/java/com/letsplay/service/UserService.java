@@ -13,20 +13,31 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class UserService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Récupère la liste de tous les utilisateurs (sous forme de DTO).
+     */
     public List<UserResponse> findAll() {
         return userRepository.findAll().stream()
                 .map(UserResponse::from)
                 .toList();
     }
 
+    /**
+     * Trouve un utilisateur par son identifiant unique.
+     */
     public UserResponse findById(String id) {
         return UserResponse.from(getUser(id));
     }
 
+    /**
+     * Met à jour les informations d'un utilisateur existant (nom, email).
+     * Vérifie également si le nouvel email n'est pas déjà pris.
+     */
     public UserResponse update(String id, UserUpdateRequest request) {
         User user = getUser(id);
 
@@ -45,12 +56,15 @@ public class UserService {
         return UserResponse.from(userRepository.save(user));
     }
 
+    /**
+     * Supprime un utilisateur de la base de données.
+     */
     public void delete(String id) {
         User user = getUser(id);
         userRepository.delete(user);
     }
 
-    // ── helper ────────────────────────────────────────────────────────────────
+    // ── helper (Méthode utilitaire) ───────────────────────────────────────────
 
     private User getUser(String id) {
         return userRepository.findById(id)

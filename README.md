@@ -1,25 +1,25 @@
-# Let's Play - Java Advanced API
+# Let's Play - API Java Avancée
 
-## Overview
-**Let's Play** is a secure and scalable RESTful CRUD API built with **Spring Boot** and **MongoDB**. This project manages two main entities: **Users** and **Products**, allowing full lifecycle management (Create, Read, Update, Delete) with a robust security layer.
+## Vue d'ensemble
+**Let's Play** est une API RESTful CRUD sécurisée et scalable construite avec **Spring Boot** et **MongoDB**. Ce projet gère deux entités principales : les **Utilisateurs** (Users) et les **Produits** (Products), permettant une gestion complète de leur cycle de vie (Création, Lecture, Mise à jour, Suppression) avec une couche de sécurité robuste.
 
-This system is designed for a small e-commerce platform where administrators can manage all users and products, while authenticated users can manage their own product listings.
+Ce système est conçu pour une petite plateforme de type e-commerce où les administrateurs peuvent gérer tous les utilisateurs et produits, tandis que les utilisateurs classiques ne peuvent gérer que leurs propres annonces de produits.
 
-## Learning Objectives
-- Master **Spring Boot** and **RESTful API** design.
-- Integrate and manage data using **MongoDB**.
-- Implement full **CRUD operations** for multiple entities.
-- Apply **Spring Security** with **JWT (JSON Web Token)** authentication.
-- Implement **Role-Based Access Control (RBAC)** (ADMIN vs. USER).
-- Secure password management using **BCrypt** hashing and salting.
-- Develop robust **Global Error Handling** with meaningful HTTP responses.
+## Objectifs d'apprentissage
+- Maîtriser **Spring Boot** et la conception d'**API RESTful**.
+- Intégrer et gérer des données avec **MongoDB**.
+- Implémenter des **opérations CRUD** complètes pour de multiples entités.
+- Appliquer **Spring Security** avec une authentification par token **JWT (JSON Web Token)**.
+- Mettre en place un **Contrôle d'Accès Basé sur les Rôles (RBAC)** (ADMIN vs USER).
+- Gérer les mots de passe de manière sécurisée via le hachage et salage **BCrypt**.
+- Développer une **gestion globale des erreurs** robuste avec des réponses HTTP explicites.
 
-## 1. Database Design
-The system uses a one-to-many relationship where one user can own multiple products.
+## 1. Modélisation de la base de données
+Le système utilise une relation "un-à-plusieurs" (One-to-Many) où un utilisateur peut posséder plusieurs produits.
 
 ```mermaid
 classDiagram
-    User "1" -- "n" Product : Owns
+    User "1" -- "n" Product : Possède
     User : +String id
     User : +String name
     User : +String email
@@ -32,66 +32,66 @@ classDiagram
     Product : +String userId
 ```
 
-## 2. API Endpoints
-All API responses are returned in **JSON** format.
+## 2. Points de terminaison (Endpoints) de l'API
+Toutes les réponses de l'API sont renvoyées au format **JSON**.
 
-### Products
-| Method | Endpoint | Access | Description |
+### Produits (Products)
+| Méthode | Endpoint | Accès | Description |
 |---|---|---|---|
-| GET | `/api/products` | Public | List all available products |
-| POST | `/api/products` | Authenticated | Create a new product |
-| PUT | `/api/products/{id}` | Owner/Admin | Update product details |
-| DELETE | `/api/products/{id}` | Owner/Admin | Delete a product |
+| GET | `/api/products` | Public | Liste tous les produits disponibles |
+| POST | `/api/products` | Authentifié | Crée un nouveau produit |
+| PUT | `/api/products/{id}` | Propriétaire/Admin | Met à jour les détails d'un produit |
+| DELETE | `/api/products/{id}` | Propriétaire/Admin | Supprime un produit |
 
-### Users (Admin Only)
-| Method | Endpoint | Access | Description |
+### Utilisateurs (Admin Uniquement)
+| Méthode | Endpoint | Accès | Description |
 |---|---|---|---|
-| GET | `/api/users` | Admin | List all registered users |
-| GET | `/api/users/{id}` | Admin | Get user details by ID |
-| PUT | `/api/users/{id}` | Admin | Update user information |
-| DELETE | `/api/users/{id}` | Admin | Remove a user |
+| GET | `/api/users` | Admin | Liste tous les utilisateurs enregistrés |
+| GET | `/api/users/{id}` | Admin | Récupère les détails d'un utilisateur par son ID |
+| PUT | `/api/users/{id}` | Admin | Met à jour les informations d'un utilisateur |
+| DELETE | `/api/users/{id}` | Admin | Supprime un utilisateur |
 
-### Authentication
-| Method | Endpoint | Description |
+### Authentification
+| Méthode | Endpoint | Description |
 |---|---|---|
-| POST | `/api/auth/register` | Register a new account |
-| POST | `/api/auth/login` | Login and receive a JWT token |
+| POST | `/api/auth/register` | Inscrit un nouveau compte |
+| POST | `/api/auth/login` | Connecte un utilisateur et renvoie un token JWT |
 
-## 3. Authentication & Authorization
-- **JWT Implementation**: Stateless authentication using Spring Security.
-- **Roles**:
-  - **ADMIN**: Can manage all users and all products.
-  - **USER**: Can manage only their own products.
-- **Secure Transmission**: Designed to work over HTTPS.
+## 3. Authentification & Autorisation
+- **Implémentation JWT** : Authentification stateless (sans état) en utilisant Spring Security.
+- **Rôles** :
+  - **ADMIN** : Peut gérer tous les utilisateurs et tous les produits.
+  - **USER** : Peut gérer uniquement ses propres produits.
+- **Transmission Sécurisée** : Conçu pour fonctionner sur HTTPS.
 
-## 4. Security Measures
-- **Password Hashing**: BCrypt is used for hashing and salting passwords before storage.
-- **Input Validation**: Sanitization of user inputs to prevent MongoDB injection attacks.
-- **Data Privacy**: Sensitive fields (like passwords) are excluded from API responses.
-- **Access Control**: Strict enforcement of role-based permissions on all endpoints.
+## 4. Mesures de Sécurité
+- **Hachage de mots de passe** : BCrypt est utilisé pour hacher et saler les mots de passe avant le stockage en base.
+- **Validation des entrées** : Nettoyage (Sanitization) des entrées utilisateurs pour prévenir les attaques par injection MongoDB.
+- **Confidentialité des données** : Les champs sensibles (comme les mots de passe) sont exclus des réponses de l'API.
+- **Contrôle d'accès** : Application stricte des permissions basées sur les rôles sur l'ensemble des endpoints.
 
-## 5. Error Handling
-The API implements a global exception handler to ensure consistency:
-- **No 5XX leakage**: All unhandled exceptions are caught and returned as clean JSON responses.
-- **HTTP Status Codes**:
-  - `400 Bad Request`: Validation errors.
-  - `401 Unauthorized`: Missing or invalid credentials.
-  - `403 Forbidden`: Insufficient permissions.
-  - `404 Not Found`: Resource does not exist.
-  - `409 Conflict`: Resource already exists (e.g., email duplication).
+## 5. Gestion des Erreurs
+L'API implémente un gestionnaire global d'exceptions (Global Exception Handler) pour assurer une cohérence :
+- **Pas de fuite d'erreur 5XX** : Toutes les exceptions non gérées sont interceptées et renvoyées sous forme de réponses JSON propres.
+- **Codes de Statut HTTP** :
+  - `400 Bad Request` : Erreurs de validation.
+  - `401 Unauthorized` : Identifiants manquants ou invalides.
+  - `403 Forbidden` : Permissions insuffisantes (accès refusé).
+  - `404 Not Found` : La ressource n'existe pas.
+  - `409 Conflict` : La ressource existe déjà (ex. email dupliqué).
 
-## 6. Constraints & Standards
-- Built with **Spring Boot** and **MongoDB**.
-- Pure **JSON** communication.
-- No sensitive data exposed in responses.
-- Clean, modular, and well-structured code.
+## 6. Contraintes & Standards
+- Construit avec **Spring Boot** et **MongoDB**.
+- Communication exclusivement en **JSON**.
+- Aucune donnée sensible n'est exposée dans les réponses.
+- Code propre, modulaire et bien structuré.
 
-## 7. Resources
+## 7. Ressources
 - [Spring Initializr](https://start.spring.io/)
-- [Spring Boot Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/)
-- [Spring Security Guide](https://spring.io/guides/topicals/spring-security-architecture/)
-- [JWT Introduction](https://jwt.io/introduction/)
-- [MongoDB Documentation](https://www.mongodb.com/docs/)
+- [Documentation Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+- [Guide Spring Security](https://spring.io/guides/topicals/spring-security-architecture/)
+- [Introduction à JWT](https://jwt.io/introduction/)
+- [Documentation MongoDB](https://www.mongodb.com/docs/)
 
 ---
-*Created as part of the Java Advanced curriculum.*
+*Créé dans le cadre du cursus Java Avancé.*

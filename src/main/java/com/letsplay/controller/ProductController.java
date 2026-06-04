@@ -20,7 +20,9 @@ public class ProductController {
     private final ProductService productService;
 
     /**
-     * GET /api/products — public
+     * GET /api/products
+     * Point de terminaison public (aucune authentification requise).
+     * Retourne la liste de tous les produits.
      */
     @GetMapping
     public ResponseEntity<List<Product>> getAll() {
@@ -28,7 +30,9 @@ public class ProductController {
     }
 
     /**
-     * GET /api/products/{id} — public
+     * GET /api/products/{id}
+     * Point de terminaison public (aucune authentification requise).
+     * Retourne les détails d'un produit spécifique.
      */
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable String id) {
@@ -36,8 +40,10 @@ public class ProductController {
     }
 
     /**
-     * POST /api/products — authenticated users
-     * Authorization: Bearer <token>
+     * POST /api/products
+     * Réservé aux utilisateurs authentifiés.
+     * En-tête (Header) : Authorization: Bearer <token>
+     * Crée un nouveau produit associé à l'utilisateur courant.
      */
     @PostMapping
     public ResponseEntity<Product> create(
@@ -47,8 +53,10 @@ public class ProductController {
     }
 
     /**
-     * PUT /api/products/{id} — owner or ADMIN
-     * Authorization: Bearer <token>
+     * PUT /api/products/{id}
+     * Réservé au propriétaire du produit ou à un ADMIN.
+     * En-tête (Header) : Authorization: Bearer <token>
+     * Met à jour les détails d'un produit.
      */
     @PutMapping("/{id}")
     public ResponseEntity<Product> update(
@@ -59,8 +67,10 @@ public class ProductController {
     }
 
     /**
-     * DELETE /api/products/{id} — owner or ADMIN
-     * Authorization: Bearer <token>
+     * DELETE /api/products/{id}
+     * Réservé au propriétaire du produit ou à un ADMIN.
+     * En-tête (Header) : Authorization: Bearer <token>
+     * Supprime un produit de la base de données.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id, Authentication auth) {

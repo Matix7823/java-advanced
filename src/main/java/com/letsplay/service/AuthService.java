@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -27,9 +28,9 @@ public class AuthService {
     private final UserDetailsService userDetailsService;
 
     /**
-     * Register a new user.
-     * Password is hashed with BCrypt before persistence.
-     * The returned token lets the user make authenticated requests immediately.
+     * Inscrit un nouvel utilisateur.
+     * Le mot de passe est haché avec BCrypt avant l'enregistrement en base.
+     * Le token retourné permet à l'utilisateur de s'authentifier immédiatement.
      */
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -51,8 +52,8 @@ public class AuthService {
     }
 
     /**
-     * Authenticate an existing user.
-     * Spring Security's AuthenticationManager validates credentials (including BCrypt comparison).
+     * Authentifie un utilisateur existant.
+     * L'AuthenticationManager de Spring Security valide les identifiants (comparaison BCrypt incluse).
      */
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
@@ -62,7 +63,7 @@ public class AuthService {
                 )
         );
 
-        // Authentication passed — load full user for the response DTO
+        // L'authentification a réussi — on charge l'utilisateur complet pour le DTO de réponse
         User user = userRepository.findByEmail(request.email().toLowerCase().trim())
                 .orElseThrow();
 
@@ -71,9 +72,9 @@ public class AuthService {
         return new AuthResponse(token, UserResponse.from(user));
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+    // ── helpers (Méthodes utilitaires) ────────────────────────────────────────
 
-    /** Basic sanitisation — strip leading/trailing whitespace, remove Mongo operators. */
+    /** Nettoyage basique — supprime les espaces aux extrémités et retire les caractères spéciaux liés à MongoDB. */
     private String sanitize(String input) {
         if (input == null) return null;
         return input.trim().replaceAll("[\\$\\{\\}]", "");

@@ -19,8 +19,9 @@ public class AuthController {
 
     /**
      * POST /api/auth/register
-     * Body: { "name": "Alice", "email": "alice@example.com", "password": "secret123" }
-     * Returns 201 + { token, user }
+     * Corps de la requête : { "name": "Alice", "email": "alice@example.com", "password": "secret123" }
+     * Retourne : 201 Créé + { token, user }
+     * Permet d'inscrire un nouvel utilisateur.
      */
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -29,8 +30,9 @@ public class AuthController {
 
     /**
      * POST /api/auth/login
-     * Body: { "email": "alice@example.com", "password": "secret123" }
-     * Returns 200 + { token, user }
+     * Corps de la requête : { "email": "alice@example.com", "password": "secret123" }
+     * Retourne : 200 Succès + { token, user }
+     * Permet de connecter un utilisateur et de récupérer son token JWT.
      */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {

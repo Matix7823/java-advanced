@@ -16,23 +16,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
-    /** Public — no auth required. */
+    /** Point de terminaison public — aucune authentification n'est requise. */
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
-    /** Public — no auth required. */
+    /** Point de terminaison public — aucune authentification n'est requise. */
     public Product findById(String id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit introuvable : " + id));
     }
 
-    /** Authenticated users only. */
+    /** Réservé aux utilisateurs authentifiés. */
     public Product create(ProductRequest request, Authentication auth) {
         User owner = resolveUser(auth);
         Product product = Product.builder()
@@ -44,7 +45,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    /** Owner or ADMIN only. */
+    /** Réservé au propriétaire du produit ou à un administrateur (ADMIN). */
     public Product update(String id, ProductRequest request, Authentication auth) {
         Product product = findById(id);
         assertOwnerOrAdmin(product, auth);
@@ -55,24 +56,24 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    /** Owner or ADMIN only. */
+    /** Réservé au propriétaire du produit ou à un administrateur (ADMIN). */
     public void delete(String id, Authentication auth) {
         Product product = findById(id);
         assertOwnerOrAdmin(product, auth);
         productRepository.delete(product);
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+    // ── helpers (Méthodes utilitaires) ────────────────────────────────────────
 
     private User resolveUser(Authentication auth) {
         return userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur authentifié introuvable"));
     }
 
     /**
-     * Allow the operation only if:
-     *  - the caller owns the product, OR
-     *  - the caller has the ADMIN role
+     * Autorise l'opération uniquement si :
+     *  - le demandeur possède ce produit (il en est le propriétaire), OU
+     *  - le demandeur possède le rôle ADMIN
      */
     private void assertOwnerOrAdmin(Product product, Authentication auth) {
         boolean isAdmin = auth.getAuthorities()
@@ -82,7 +83,7 @@ public class ProductService {
             User caller = resolveUser(auth);
             if (!product.getUserId().equals(caller.getId())) {
                 throw new ForbiddenActionException(
-                        "You are not allowed to modify this product");
+                        "Vous n'êtes pas autorisé à modifier ce produit.");
             }
         }
     }

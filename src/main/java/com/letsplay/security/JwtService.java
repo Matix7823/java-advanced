@@ -27,7 +27,7 @@ public class JwtService {
         this.expirationMs = expirationMs;
     }
 
-    /** Generate a signed JWT for a user (sub = email). */
+    /** Génère un JWT signé pour un utilisateur (le sujet 'sub' est l'email). */
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
@@ -37,23 +37,23 @@ public class JwtService {
                 .compact();
     }
 
-    /** Extract the subject (email) from the token. */
+    /** Extrait le sujet (email) à partir du token JWT. */
     public String extractEmail(String token) {
         return parseClaims(token).getSubject();
     }
 
-    /** Validate token signature, expiry and consistency with UserDetails. */
+    /** Valide la signature du token, son expiration et la cohérence avec le UserDetails. */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
             String email = extractEmail(token);
             return email.equals(userDetails.getUsername()) && !isExpired(token);
         } catch (JwtException | IllegalArgumentException e) {
-            log.warn("Invalid JWT: {}", e.getMessage());
+            log.warn("JWT Invalide : {}", e.getMessage());
             return false;
         }
     }
 
-    // ── private helpers ──────────────────────────────────────────────────────
+    // ── private helpers (Méthodes privées) ───────────────────────────────────
 
     private boolean isExpired(String token) {
         return parseClaims(token).getExpiration().before(new Date());

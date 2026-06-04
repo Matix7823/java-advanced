@@ -33,6 +33,6 @@ public class Product {
     @Positive
     private Double price;
 
-    /** Owner reference — foreign key to User._id */
+    /** Référence au propriétaire — clé étrangère vers User._id */
     private String userId;
 }
